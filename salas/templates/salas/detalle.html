@@ -1,0 +1,20 @@
+{% extends 'salas/base.html' %}
+{% block content %}
+<h2>{{ sala.nombre }}</h2>
+<p>Capacidad: {{ sala.capacidad_maxima }}</p>
+<p>Habilitada: {% if sala.habilitada %}Sí{% else %}No{% endif %}</p>
+
+{% if reserva_activa %}
+    <div class="alert alert-warning">
+        <strong>RESERVADA</strong><br>
+        Desde: {{ reserva_activa.fecha_inicio|date:"d/m/Y H:i" }}<br>
+        Hasta: {{ reserva_activa.fecha_termino|date:"d/m/Y H:i" }}
+    </div>
+{% else %}
+    {% if sala.disponible %}
+    <a href="{% url 'reservar' sala.pk %}" class="btn btn-success btn-lg">Reservar ahora (2 horas)</a>
+    {% endif %}
+{% endif %}
+
+<a href="{% url 'inicio' %}" class="btn btn-secondary mt-3">Volver</a>
+{% endblock %}

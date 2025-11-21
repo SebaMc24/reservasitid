@@ -1,0 +1,19 @@
+{% extends 'salas/base.html' %}
+{% block content %}
+<h1 class="mb-4">Salas de Estudio - ITID</h1>
+<div class="row">
+    {% for sala in salas %}
+    <div class="col-md-4 mb-4">
+        <div class="card {% if sala.disponible %}border-success{% else %}border-danger{% endif %}">
+            <div class="card-body">
+                <h5>{{ sala.nombre }}</h5>
+                <p>Capacidad: {{ sala.capacidad_maxima }}</p>
+                <p><strong>{% if sala.disponible %}DISPONIBLE{% else %}RESERVADA{% endif %}</strong></p>
+                <a href="{% url 'detalle_sala' sala.pk %}" class="btn btn-primary">Ver detalle</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<a href="/admin/" class="btn btn-dark">Admin Django</a>
+{% endblock %}

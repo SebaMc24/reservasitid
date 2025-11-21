@@ -1,0 +1,10 @@
+{% extends 'salas/base.html' %}
+{% block content %}
+<h2>Reservar {{ sala.nombre }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Confirmar Reserva</button>
+</form>
+<a href="{% url 'detalle_sala' sala.pk %}" class="btn btn-secondary">Cancelar</a>
+{% endblock %}
