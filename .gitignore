@@ -1,4 +1,4 @@
- venv/
+venv/
 .env
 wallet/
 __pycache__/
