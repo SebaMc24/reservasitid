@@ -1,19 +1,56 @@
-{% extends 'salas/base.html' %}
-{% block content %}
-<h1 class="mb-4">Salas de Estudio - ITID</h1>
-<div class="row">
-    {% for sala in salas %}
-    <div class="col-md-4 mb-4">
-        <div class="card {% if sala.disponible %}border-success{% else %}border-danger{% endif %}">
-            <div class="card-body">
-                <h5>{{ sala.nombre }}</h5>
-                <p>Capacidad: {{ sala.capacidad_maxima }}</p>
-                <p><strong>{% if sala.disponible %}DISPONIBLE{% else %}RESERVADA{% endif %}</strong></p>
-                <a href="{% url 'detalle_sala' sala.pk %}" class="btn btn-primary">Ver detalle</a>
-            </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Salas ITID</title>
+    <style>
+        body { font-family: Arial; max-width: 1200px; margin: 20px auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #2196F3; padding-bottom: 15px; }
+        .admin-link { padding: 10px 20px; background: #ff9800; color: white; text-decoration: none; border-radius: 3px; font-weight: bold; }
+        .admin-link:hover { background: #f57c00; }
+        .sala { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .disponible { background: #e8f5e9; }
+        .reservada { background: #ffebee; }
+        .deshabilitada { background: #f5f5f5; color: #999; }
+        a.btn { display: inline-block; padding: 8px 15px; background: #2196F3; color: white; text-decoration: none; border-radius: 3px; }
+        a.btn:hover { background: #1976D2; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Salas de Estudio - ITID</h1>
+        <a href="/admin/" class="admin-link">🔐 Acceso Administrador</a>
+    </header>
+    
+    {% if salas %}
+        {% for sala in salas %}
+        {% if sala.pk %}
+        <div class="sala {% if not sala.habilitada %}deshabilitada{% elif sala.disponible %}disponible{% else %}reservada{% endif %}">
+            <h2>{{ sala.nombre }}</h2>
+            <p><strong>Capacidad:</strong> {{ sala.capacidad_maxima }} personas</p>
+            <p><strong>Estado:</strong> 
+                {% if not sala.habilitada %}
+                    ❌ Deshabilitada
+                {% elif sala.disponible %}
+                    ✅ Disponible
+                {% else %}
+                    🔒 Reservada
+                {% endif %}
+            </p>
+            
+            <a href="{% url 'detalle_sala' sala.pk %}" class="btn">Ver Detalle</a>
+            
+            {% if sala.habilitada and sala.disponible %}
+            <a href="{% url 'reservar' sala.pk %}" class="btn">Reservar Ahora</a>
+            {% endif %}
         </div>
-    </div>
-    {% endfor %}
-</div>
-<a href="/admin/" class="btn btn-dark">Admin Django</a>
-{% endblock %}
+        {% endif %}
+        {% endfor %}
+    {% else %}
+        <p style="text-align: center; padding: 40px;">
+            No hay salas disponibles. 
+            <a href="/admin/salas/sala/add/">Crear una sala</a>
+        </p>
+    {% endif %}
+</body>
+</html>

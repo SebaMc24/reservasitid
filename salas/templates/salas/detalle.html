@@ -1,20 +1,46 @@
-{% extends 'salas/base.html' %}
-{% block content %}
-<h2>{{ sala.nombre }}</h2>
-<p>Capacidad: {{ sala.capacidad_maxima }}</p>
-<p>Habilitada: {% if sala.habilitada %}Sí{% else %}No{% endif %}</p>
-
-{% if reserva_activa %}
-    <div class="alert alert-warning">
-        <strong>RESERVADA</strong><br>
-        Desde: {{ reserva_activa.fecha_inicio|date:"d/m/Y H:i" }}<br>
-        Hasta: {{ reserva_activa.fecha_termino|date:"d/m/Y H:i" }}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ sala.nombre }} - Detalle</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 20px auto; padding: 20px; }
+        .info { background: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .reserva { background: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        a.btn { display: inline-block; padding: 10px 20px; background: #2196F3; color: white; text-decoration: none; border-radius: 3px; margin: 5px; }
+        a.btn:hover { background: #1976D2; }
+        .volver { background: #757575; }
+    </style>
+</head>
+<body>
+    <h1>{{ sala.nombre }}</h1>
+    
+    <div class="info">
+        <p><strong>Capacidad Máxima:</strong> {{ sala.capacidad_maxima }} personas</p>
+        <p><strong>Estado:</strong> 
+            {% if not sala.habilitada %}
+                ❌ Deshabilitada
+            {% elif sala.disponible %}
+                ✅ Disponible para reservar
+            {% else %}
+                🔒 Actualmente reservada
+            {% endif %}
+        </p>
     </div>
-{% else %}
-    {% if sala.disponible %}
-    <a href="{% url 'reservar' sala.pk %}" class="btn btn-success btn-lg">Reservar ahora (2 horas)</a>
+    
+    {% if reserva_activa %}
+    <div class="reserva">
+        <h3>Reserva Activa</h3>
+        <p><strong>RUT:</strong> {{ reserva_activa.rut }}</p>
+        <p><strong>Hora de Inicio:</strong> {{ reserva_activa.fecha_inicio|date:"d/m/Y H:i" }}</p>
+        <p><strong>Hora de Término:</strong> {{ reserva_activa.fecha_termino|date:"d/m/Y H:i" }}</p>
+    </div>
     {% endif %}
-{% endif %}
-
-<a href="{% url 'inicio' %}" class="btn btn-secondary mt-3">Volver</a>
-{% endblock %}
+    
+    {% if sala.habilitada and sala.disponible %}
+    <a href="{% url 'reservar' sala.pk %}" class="btn">Reservar Esta Sala</a>
+    {% endif %}
+    
+    <a href="{% url 'inicio' %}" class="btn volver">Volver a Salas</a>
+</body>
+</html>
